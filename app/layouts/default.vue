@@ -3,15 +3,13 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 /*
  * Sidebar navigation, grouped by DigitalOcean's mental model.
- * Only Dashboard is live in the skeleton; resource links are disabled placeholders
- * that light up as each vertical slice lands.
+ * Only Dashboard is live so far; resource links are disabled placeholders
+ * (no `to`) that light up as each vertical slice lands.
  */
 const nav = computed<NavigationMenuItem[][]>(() => [
   [
     { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/' }
   ],
-  // Placeholders for upcoming vertical slices — disabled (no `to`) so the router doesn't
-  // try to resolve routes that don't exist yet.
   [
     { label: 'Droplets', icon: 'i-lucide-server', disabled: true },
     { label: 'Databases', icon: 'i-lucide-database', disabled: true },
@@ -22,6 +20,11 @@ const nav = computed<NavigationMenuItem[][]>(() => [
     { label: 'Load Balancers', icon: 'i-lucide-scale', disabled: true },
     { label: 'Domains', icon: 'i-lucide-globe', disabled: true }
   ]
+])
+
+// Pinned to the bottom of the sidebar.
+const bottomNav = computed<NavigationMenuItem[]>(() => [
+  { label: 'Settings', icon: 'i-lucide-settings', to: '/settings/teams' }
 ])
 </script>
 
@@ -48,10 +51,16 @@ const nav = computed<NavigationMenuItem[][]>(() => [
           :items="nav"
           orientation="vertical"
         />
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="bottomNav"
+          orientation="vertical"
+          class="mt-auto"
+        />
       </template>
 
       <template #footer="{ collapsed }">
-        <AccountMenu :collapsed="collapsed" />
+        <TeamSwitcher :collapsed="collapsed" />
       </template>
     </UDashboardSidebar>
 
