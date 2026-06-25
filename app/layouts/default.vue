@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+const { refreshActive } = useDoAuth()
+
 /*
  * Sidebar navigation, grouped by DigitalOcean's mental model.
  * Only Dashboard is live so far; resource links are disabled placeholders
@@ -24,8 +26,14 @@ const nav = computed<NavigationMenuItem[][]>(() => [
 
 // Pinned to the bottom of the sidebar.
 const bottomNav = computed<NavigationMenuItem[]>(() => [
-  { label: 'Settings', icon: 'i-lucide-settings', to: '/settings/teams' }
+  { label: 'Settings', icon: 'i-lucide-settings', to: '/settings' }
 ])
+
+// Re-verify the active token once when the app shell mounts: catches a revoked token early
+// (via $doFetch's 401 handler) and refreshes stale team/account info. Client-only.
+onMounted(() => {
+  refreshActive()
+})
 </script>
 
 <template>
@@ -60,7 +68,10 @@ const bottomNav = computed<NavigationMenuItem[]>(() => [
       </template>
 
       <template #footer="{ collapsed }">
-        <TeamSwitcher :collapsed="collapsed" />
+        <div class="flex flex-col gap-1 w-full">
+          <ColorModeToggle :collapsed="collapsed" />
+          <TeamSwitcher :collapsed="collapsed" />
+        </div>
       </template>
     </UDashboardSidebar>
 

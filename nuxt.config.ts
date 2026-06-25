@@ -27,6 +27,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Theme via @nuxtjs/color-mode (registered by @nuxt/ui). Follows the OS by default,
+  // switchable at runtime; empty classSuffix keeps the `.dark` class Tailwind expects.
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'dark'
+  },
+
   runtimeConfig: {
     public: {
       // Calls go straight from the browser to the DigitalOcean API.

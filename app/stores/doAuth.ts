@@ -58,6 +58,15 @@ export const useDoAuthStore = defineStore('do-auth', () => {
     return entry
   }
 
+  /** Refresh the active token's cached account info (after re-verifying it on load). */
+  function updateActiveAccount(account: DoAccount) {
+    const entry = activeToken.value
+    if (!entry) return
+    entry.accountEmail = account.email
+    entry.teamUuid = account.team?.uuid ?? null
+    entry.teamName = account.team?.name ?? null
+  }
+
   function removeToken(id: string) {
     const index = tokens.value.findIndex(t => t.id === id)
     if (index === -1) return
@@ -88,6 +97,7 @@ export const useDoAuthStore = defineStore('do-auth', () => {
     token,
     isConnected,
     addToken,
+    updateActiveAccount,
     removeToken,
     renameToken,
     setActive,

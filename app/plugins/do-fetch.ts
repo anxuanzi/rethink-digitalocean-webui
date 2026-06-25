@@ -8,6 +8,7 @@
  */
 export default defineNuxtPlugin(() => {
   const auth = useDoAuthStore()
+  const toast = useToast()
   const { digitalOceanApiBase } = useRuntimeConfig().public
 
   const doFetch = $fetch.create({
@@ -16,6 +17,28 @@ export default defineNuxtPlugin(() => {
       // Read the token reactively at request time.
       if (auth.token) {
         options.headers.set('Authorization', `Bearer ${auth.token}`)
+      }
+    },
+    // Shared handling for every active-token call (resource fetches + mutations).
+    // The `id` on each toast dedupes bursts of failures into a single notification.
+    onResponseError({ response }) {
+      if (response.status === 401) {
+        toast.add({
+          id: 'do-auth-error',
+          title: 'Could not authenticate with DigitalOcean',
+          description: 'Your token may be invalid or revoked. Re-add it to continue.',
+          color: 'error',
+          icon: 'i-lucide-shield-alert'
+        })
+        navigateTo('/settings/teams')
+      } else if (response.status === 429) {
+        toast.add({
+          id: 'do-rate-limit',
+          title: 'Rate limit reached',
+          description: 'DigitalOcean is throttling requests — try again shortly.',
+          color: 'warning',
+          icon: 'i-lucide-alert-triangle'
+        })
       }
     }
   })
