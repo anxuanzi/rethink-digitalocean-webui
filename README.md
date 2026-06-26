@@ -6,12 +6,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Nuxt](https://img.shields.io/badge/Nuxt-4-00DC82?logo=nuxtdotjs&logoColor=white)](https://nuxt.com)
 
-## Why
-
-All of my startups run on DigitalOcean, and I'm in its web console every single day — and honestly, I'm tired of it. The UX gets in the way, it feels slow, and it's missing the management features I actually need (firewall **rule notes**, **batch editing**, fast search). So I'm building my own.
-
-This is that: a focused, keyboard-friendly console for managing real DigitalOcean infrastructure, with the polish of tools like Linear, Stripe, and Vercel.
-
 ## 🔒 Everything stays in your browser
 
 This is the core design principle — there is **no backend at all**:
