@@ -14,7 +14,7 @@ const nav = computed<NavigationMenuItem[][]>(() => [
   ],
   [
     { label: 'Droplets', icon: 'i-lucide-server', to: '/droplets' },
-    { label: 'Databases', icon: 'i-lucide-database', disabled: true },
+    { label: 'Databases', icon: 'i-lucide-database', to: '/databases' },
     { label: 'Kubernetes', icon: 'i-lucide-ship-wheel', disabled: true }
   ],
   [

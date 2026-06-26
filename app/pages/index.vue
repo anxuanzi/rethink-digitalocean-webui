@@ -2,6 +2,7 @@
 useHead({ title: 'Dashboard' })
 
 const { droplets, total, isPending, refresh } = useDroplets()
+const { total: databaseTotal, isPending: databasesPending } = useDatabases()
 
 // Headline KPIs, account-wide (mirrors the Droplets page so the numbers line up).
 const activeCount = computed(() => droplets.value.filter(d => d.status === 'active').length)
@@ -12,6 +13,8 @@ const monthlySpend = computed(() =>
 
 // First load only — keep numbers visible during background refetches.
 const loading = computed(() => isPending.value && !droplets.value.length)
+// The resource grid also surfaces the database count, so it waits on that query too.
+const resourcesLoading = computed(() => loading.value || (databasesPending.value && !databaseTotal.value))
 
 function onRefresh() {
   refresh()
@@ -52,7 +55,8 @@ function onRefresh() {
 
         <DashboardResources
           :droplet-count="total"
-          :loading="loading"
+          :database-count="databaseTotal"
+          :loading="resourcesLoading"
         />
 
         <div class="grid gap-6 lg:grid-cols-3">

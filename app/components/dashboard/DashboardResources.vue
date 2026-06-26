@@ -3,11 +3,11 @@
  * Quick-launch tiles for each resource area. Droplets is live (links to the list with its
  * count); the rest are styled placeholders that light up as each vertical slice ships.
  */
-const props = defineProps<{ dropletCount: number, loading?: boolean }>()
+const props = defineProps<{ dropletCount: number, databaseCount: number, loading?: boolean }>()
 
 const resources = computed(() => [
   { label: 'Droplets', icon: 'i-lucide-server', to: '/droplets', count: props.dropletCount, available: true },
-  { label: 'Databases', icon: 'i-lucide-database', available: false },
+  { label: 'Databases', icon: 'i-lucide-database', to: '/databases', count: props.databaseCount, available: true },
   { label: 'Kubernetes', icon: 'i-lucide-ship-wheel', available: false },
   { label: 'Firewalls', icon: 'i-lucide-shield', available: false },
   { label: 'Load Balancers', icon: 'i-lucide-scale', available: false },
