@@ -30,6 +30,33 @@
   --ui-bg-accented: var(--ui-color-neutral-800);
 }
 
+/*
+ * Interactive cursor. Tailwind v4 / Nuxt UI leave enabled controls at the browser default
+ * cursor (an arrow) and only switch to `not-allowed` when disabled — so buttons, selects,
+ * checkboxes, switches, tabs, and menu items all felt "dead" on hover. Restore the pointer
+ * on genuinely clickable controls app-wide. Disabled controls are excluded (`:disabled`,
+ * `aria-disabled`, `data-disabled`) so they keep their not-allowed/default cursor. Plain
+ * clickable elements (a `<div>`/`<li>` with @click) still opt in with a `cursor-pointer` class.
+ */
+@layer base {
+  button:not(:disabled):not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  label[for],
+  [role="button"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="tab"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="switch"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="checkbox"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="radio"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="combobox"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="option"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="menuitem"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="menuitemcheckbox"]:not([aria-disabled="true"]):not([data-disabled]),
+  [role="menuitemradio"]:not([aria-disabled="true"]):not([data-disabled]) {
+    cursor: pointer;
+  }
+}
+
 /* --- Motion: purposeful, subtle, and reduced-motion aware --- */
 
 /* Staggered entrance for cards/sections (apply with an inline animation-delay). */
