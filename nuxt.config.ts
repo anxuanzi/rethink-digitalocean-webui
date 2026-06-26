@@ -8,12 +8,17 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     '@pinia/colada-nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-charts'
   ],
 
   // Pure client-side SPA — no server runtime. The DigitalOcean API supports CORS, so the
   // browser talks to it directly and the whole app deploys as static files (e.g. GitHub Pages).
   ssr: false,
+
+  // Reference components by their bare filename (e.g. <DropletStatusBadge>) regardless of
+  // subdirectory — no path-prefixed names. Filenames are unique across the tree.
+  components: [{ path: '~/components', pathPrefix: false }],
 
   devtools: {
     enabled: true
@@ -23,6 +28,10 @@ export default defineNuxtConfig({
     // GitHub Pages serves a project site under a subpath. CI sets NUXT_APP_BASE_URL
     // (e.g. '/rethink-digitalocean-webui/'); local dev defaults to '/'.
     baseURL: process.env.NUXT_APP_BASE_URL || '/'
+    // No route-level pageTransition: Nuxt UI's <UDashboardPanel> renders multiple root
+    // nodes (panel + resize handle), which a <Transition> can't animate — with `out-in`
+    // it blanks the destination on client-side navigation. Entrance motion is handled
+    // per-section via `.animate-rise` instead.
   },
 
   css: ['~/assets/css/main.css'],

@@ -29,3 +29,27 @@
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
 }
+
+/* --- Motion: purposeful, subtle, and reduced-motion aware --- */
+
+/* Staggered entrance for cards/sections (apply with an inline animation-delay). */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise-in 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    transition: none !important;
+    animation: none !important;
+  }
+}

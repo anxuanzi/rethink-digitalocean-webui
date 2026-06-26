@@ -1,16 +1,21 @@
 <script setup lang="ts">
 useHead({ title: 'Dashboard' })
 
-const store = useDoAuthStore()
-const active = computed(() => store.activeToken)
+const { droplets, total, isPending, refresh } = useDroplets()
 
-// Placeholder resource tiles — each becomes a real vertical slice next.
-const resources = [
-  { label: 'Droplets', icon: 'i-lucide-server' },
-  { label: 'Databases', icon: 'i-lucide-database' },
-  { label: 'Firewalls', icon: 'i-lucide-shield' },
-  { label: 'Domains', icon: 'i-lucide-globe' }
-]
+// Headline KPIs, account-wide (mirrors the Droplets page so the numbers line up).
+const activeCount = computed(() => droplets.value.filter(d => d.status === 'active').length)
+const offCount = computed(() => droplets.value.filter(d => d.status === 'off').length)
+const monthlySpend = computed(() =>
+  Math.round(droplets.value.reduce((sum, d) => sum + (d.size?.price_monthly ?? 0), 0))
+)
+
+// First load only — keep numbers visible during background refetches.
+const loading = computed(() => isPending.value && !droplets.value.length)
+
+function onRefresh() {
+  refresh()
+}
 </script>
 
 <template>
@@ -20,54 +25,46 @@ const resources = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+
+        <template #right>
+          <UButton
+            icon="i-lucide-refresh-cw"
+            color="neutral"
+            variant="ghost"
+            aria-label="Refresh dashboard"
+            :loading="isPending"
+            @click="onRefresh"
+          />
+        </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
       <div class="space-y-6">
-        <!-- Which team you're acting as, straight from the saved token. -->
-        <div class="bg-elevated/50 rounded-lg border border-default p-4 flex items-center gap-3">
-          <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            <UIcon
-              name="i-lucide-circle-check"
-              class="size-5 text-primary"
-            />
-          </div>
-          <div
-            v-if="active"
-            class="min-w-0"
-          >
-            <p class="font-medium text-highlighted truncate">
-              Connected to {{ active.label }}
-            </p>
-            <p class="text-sm text-muted truncate">
-              {{ active.accountEmail }}
-            </p>
-          </div>
-        </div>
+        <DashboardWelcome :droplet-count="total" />
 
-        <!-- Resource tiles (coming soon in the skeleton). -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div
-            v-for="resource in resources"
-            :key="resource.label"
-            class="bg-elevated/50 rounded-lg border border-default p-4 flex items-center gap-3"
-          >
-            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <UIcon
-                :name="resource.icon"
-                class="size-5 text-primary"
-              />
-            </div>
-            <div>
-              <p class="font-medium text-highlighted">
-                {{ resource.label }}
-              </p>
-              <p class="text-xs text-muted">
-                Coming soon
-              </p>
-            </div>
-          </div>
+        <DropletsStatBar
+          :total="total"
+          :active="activeCount"
+          :off="offCount"
+          :monthly-spend="monthlySpend"
+        />
+
+        <DashboardResources
+          :droplet-count="total"
+          :loading="loading"
+        />
+
+        <div class="grid gap-6 lg:grid-cols-3">
+          <DashboardRecentDroplets
+            class="lg:col-span-2"
+            :droplets="droplets"
+            :loading="loading"
+          />
+          <DashboardFleetBreakdown
+            :droplets="droplets"
+            :loading="loading"
+          />
         </div>
       </div>
     </template>
